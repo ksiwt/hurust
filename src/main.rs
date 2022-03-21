@@ -24,7 +24,10 @@ fn main() {
         .get_matches();
 
     match matches.subcommand() {
-        Some(("new", sub_matches)) => println!("title is : {:?}", sub_matches.value_of("title")),
+        Some(("new", sub_matches)) => {
+            let title = sub_matches.value_of("title").unwrap();
+            hurust::run(title).unwrap_or_else(|e| panic!("Error: failed to run {}.", e));
+        }
         _ => unreachable!("arg required"),
     }
 }
