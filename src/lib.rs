@@ -15,23 +15,20 @@ pub fn run(title: &str) -> Result<(), Error> {
 }
 
 fn create_branch(repo: &Repository, branch_name: &str) -> Result<(), Error> {
-    let head = match repo.head() {
-        Ok(head) => Some(head),
-        Err(ref e) if e.code() == ErrorCode::UnbornBranch || e.code() == ErrorCode::NotFound => {
-            None
-        }
-        Err(e) => return Err(e),
-    };
-
     let head = repo.head().unwrap();
     let oid = head.target().unwrap();
     let commit = repo.find_commit(oid).unwrap();
 
-    let branch = match repo.branch(branch_name, &commit, false) {
+    let _branch = match repo.branch(branch_name, &commit, false) {
         Ok(branch) => Some(branch),
-        Err(ref e) if e.code() == ErrorCode::Exists => None,
-        Err(e) => return Err(e),
+        Err(ref e) if e.code() == ErrorCode::Exists => {
+            println!("branch has already exists: {}", branch_name);
+            None
+        }
+        Err(e) => panic!("Error: failed to open site repository: {}", e),
     };
 
-    return Ok(());
+    println!("successfuly create brach: {}", branch_name);
+
+    Ok(())
 }
