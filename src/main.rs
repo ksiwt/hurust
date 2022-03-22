@@ -1,36 +1,20 @@
-use clap::{Arg, Command};
+mod cli;
+
+use git2::Error;
+
+fn run() -> Result<(), Error> {
+    let matches = cli::parse();
+    if let Some(matches) = matches.subcommand_matches("new") {
+        let title = matches.value_of("title").unwrap();
+        hurust::run(title)?;
+    }
+
+    Ok(())
+}
 
 fn main() {
-    let matches = Command::new("hurust")
-        .about("create new post with git checkout branch")
-        .version("1.0.0")
-        .author("mudrk")
-        .subcommand_required(true)
-        // Query subcommand
-        .subcommand(
-            Command::new("new")
-                .short_flag('n')
-                .long_flag("new")
-                .about("create new post")
-                .arg(
-                    Arg::new("title")
-                        .short('t')
-                        .long("title")
-                        .help("input post title")
-                        .takes_value(true)
-                        .required(true),
-                ),
-        )
-        .get_matches();
-
-    match matches.subcommand() {
-        Some(("new", sub_matches)) => {
-            let title = sub_matches.value_of("title").unwrap();
-            if let Err(err) = hurust::run(title) {
-                eprintln!("{}", err);
-                std::process::exit(1);
-            }
-        }
-        _ => unreachable!("arg required"),
+    if let Err(e) = run() {
+        eprintln!("{}", e);
+        std::process::exit(1);
     }
 }
