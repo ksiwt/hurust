@@ -24,7 +24,13 @@ fn main() {
         .get_matches();
 
     match matches.subcommand() {
-        Some(("new", sub_matches)) => println!("title is : {:?}", sub_matches.value_of("title")),
+        Some(("new", sub_matches)) => {
+            let title = sub_matches.value_of("title").unwrap();
+            if let Err(err) = hurust::run(title) {
+                eprintln!("{}", err);
+                std::process::exit(1);
+            }
+        }
         _ => unreachable!("arg required"),
     }
 }
