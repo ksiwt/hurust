@@ -26,7 +26,10 @@ fn main() {
     match matches.subcommand() {
         Some(("new", sub_matches)) => {
             let title = sub_matches.value_of("title").unwrap();
-            hurust::run(title).unwrap_or_else(|e| panic!("Error: failed to run {}.", e));
+            if let Err(err) = hurust::run(title) {
+                eprintln!("{}", err);
+                std::process::exit(1);
+            }
         }
         _ => unreachable!("arg required"),
     }

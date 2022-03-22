@@ -1,34 +1,42 @@
 use git2::{Error, ErrorCode, Repository};
 
 pub fn run(title: &str) -> Result<(), Error> {
-    let repo = match Repository::open(".") {
-        Ok(repo) => repo,
-        Err(e) => return Err(e),
-    };
+    let repo = Repository::open(".")?;
 
-    create_branch(&repo, &title).unwrap_err();
+    create_branch(&repo, &title)?;
 
-    println!("{:?}", title);
-    println!("{:?}", repo.path().to_str());
+    checkout_branch(&repo, &title)?;
 
-    return Ok(());
+    Ok(())
 }
 
 fn create_branch(repo: &Repository, branch_name: &str) -> Result<(), Error> {
-    let head = repo.head().unwrap();
+    let head = repo.head()?;
     let oid = head.target().unwrap();
-    let commit = repo.find_commit(oid).unwrap();
+    let commit = repo.find_commit(oid)?;
 
-    let _branch = match repo.branch(branch_name, &commit, false) {
-        Ok(branch) => Some(branch),
+    match repo.branch(branch_name, &commit, false) {
+        Ok(_) => (),
         Err(ref e) if e.code() == ErrorCode::Exists => {
             println!("branch has already exists: {}", branch_name);
-            None
+            return Ok(());
         }
-        Err(e) => panic!("Error: failed to open site repository: {}", e),
+        Err(e) => return Err(e),
     };
 
     println!("successfuly create brach: {}", branch_name);
+
+    Ok(())
+}
+
+fn checkout_branch(repo: &Repository, branch_name: &str) -> Result<(), Error> {
+    let obj = repo.revparse_single(&("refs/heads/".to_owned() + branch_name))?;
+
+    repo.checkout_tree(&obj, None)?;
+
+    repo.set_head(&("refs/heads/".to_owned() + branch_name))?;
+
+    println!("successfuly checkout brach: {}", branch_name);
 
     Ok(())
 }
