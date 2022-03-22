@@ -3,9 +3,9 @@ use git2::{Error, ErrorCode, Repository};
 pub fn run(title: &str) -> Result<(), Error> {
     let repo = Repository::open(".")?;
 
-    create_branch(&repo, &title)?;
+    create_branch(&repo, title)?;
 
-    checkout_branch(&repo, &title)?;
+    checkout_branch(&repo, title)?;
 
     Ok(())
 }
