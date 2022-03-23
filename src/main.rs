@@ -1,4 +1,5 @@
 mod cli;
+mod hugo;
 
 use git2::Error;
 
@@ -7,6 +8,7 @@ fn run() -> Result<(), Error> {
     if let Some(matches) = matches.subcommand_matches("new") {
         let title = matches.value_of("title").unwrap();
         hurust::run(title)?;
+        hugo::create_post(title);
     }
 
     Ok(())
