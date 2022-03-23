@@ -8,7 +8,12 @@ pub fn create_post(title: &str) {
         .expect("Error: Failed to run hugo new command");
 }
 
-#[test]
-fn test_post() {
-    assert_eq!(create_post("test"), ());
+#[cfg(test)]
+mod test {
+    use super::create_post;
+
+    #[test]
+    fn test_create_post() {
+        create_post("test");
+    }
 }
