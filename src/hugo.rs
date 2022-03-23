@@ -7,13 +7,3 @@ pub fn create_post(title: &str) {
         .spawn()
         .expect("Error: Failed to run hugo new command");
 }
-
-#[cfg(test)]
-mod test {
-    use super::create_post;
-
-    #[test]
-    fn test_create_post() {
-        create_post("test");
-    }
-}
