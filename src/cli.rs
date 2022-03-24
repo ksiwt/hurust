@@ -1,8 +1,8 @@
 use clap::{Arg, Command};
 
 pub fn parse() -> clap::ArgMatches {
-    Command::new("hurust")
-        .about("create new post with git checkout branch")
+    Command::new("Hurust")
+        .about("Command line tool which act as wrapper of hugo new command")
         .version("1.0.0")
         .author("mudrk")
         .subcommand_required(true)
@@ -11,12 +11,12 @@ pub fn parse() -> clap::ArgMatches {
             Command::new("new")
                 .short_flag('n')
                 .long_flag("new")
-                .about("create new post")
+                .about("create new content")
                 .arg(
                     Arg::new("title")
                         .short('t')
                         .long("title")
-                        .help("input post title")
+                        .help("input content title")
                         .takes_value(true)
                         .required(true),
                 ),
